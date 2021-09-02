@@ -1,6 +1,5 @@
 analyze_pathways <- function(b,path.names,mycancerstudy,studyName){
 library(RColorBrewer)  # color palettes
-# pnames = c("aa","yada","ghj","hej","noob","l2p","noob2","kys")
   # brewer color scales
 colscales = c("Blues","BuGn", "BuPu", "GnBu", "Greens", "Greys", "Oranges", "OrRd",
               "PuBu", "PuBuGn", "PuRd", "Purples", "RdPu", "Reds", "YlGn", "YlGnBu", "YlOrBr", "YlOrRd")
