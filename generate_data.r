@@ -1,34 +1,10 @@
 library(cgdsr)
 library(survival)
-# library(ggfortify)
 library(survminer)
 source("/home/gabriela/Documents/code/Cox/GSA.read.gmt.r")
 source("/home/gabriela/Documents/code/Cox/pathway_analysis.r")
-# source("/home/gabriela/Documents/code/Cox/cancer/allgenes.r")
 
 mycgds = CGDS("http://www.cbioportal.org/")
-#ii = 67 #47 #117;# study number
-# did work  8,19,20,27,32,34,47,50,51,56,67,78,82,84,92,95,101,112,117,119,124,130,134,135,148,181,186,190,201,217,231,234,246,250,258,260,266,270,274
-# screwdji 34, # not done 134
-# 34 lgg
-# 130 luad
-# 186 paad
-# 47 brca breast 49?
-# 266 ucs uterine carcinosarcoma 269?
-# 221 prad prostate
-# 53 cervical ceas
-# 68 colorectal coadread
-# 57 Cholangiocarcinoma chol
-# 248 stomach stad
-# 126 liver lihc
-# 275 Uterine corpus carcinoma ucec
-# 8 acute myeloid leukemia laml
-# 19 adrenocortical carcinoma acc
-# 27 bladder cancer blca
-# 114 kidney chromophobe kich
-# 237 skin cutaneous melanoma skcm
-# 281 uveal melanoma uvm
-# for(ii in 27){#c(124,130,135,134,34)){
 
 for(ii in mySelectedStudies){ #get this by running gettingTCGAsamplesWithExpressio...
 gflag = TRUE #FALSE  # TRUE if genes should be grouped into pathways
@@ -40,35 +16,9 @@ adapt = FALSE  # adaptive choice of low/high risk split
 paths <- NULL
 path.names <- NULL
 
-# paths <- allgenes()
-# path.names <- paths
-
-# pathways <- GSA.read.gmt("/home/gmalenova/Documents/code/cancer/pathways/module1.gmt")
-# paths <- c(paths,pathways$genesets)
-# path.names <- c(path.names, pathways$geneset.names)
-# 
-# pathways <- GSA.read.gmt("/home/gabriela/Documents/code/Cox/pathways/Gatza_annotation.gmt")
-# paths <- c(paths,pathways$genesets)
-# path.names <- c(path.names, pathways$geneset.names)
-# 
-# pathways <- GSA.read.gmt("/home/gabriela/Documents/code/Cox/pathways/progeny_annotation.gmt")
-# paths <- c(paths,pathways$genesets)
-# path.names <- c(path.names, pathways$geneset.names)
-# #
-# pathways <- GSA.read.gmt("/home/gabriela/Documents/code/Cox/pathways/SPEED_annotation.gmt")
-# paths <- c(paths,pathways$genesets)
-# path.names <- c(path.names, pathways$geneset.names)
-# 
-# pathways <- GSA.read.gmt("/home/gabriela/Documents/code/Cox/pathways/Wnt_Notch_v2.gmt")
-# paths <- c(paths,pathways$genesets)
-# path.names <- c(path.names, pathways$geneset.names)
-
-#aas = read.csv("/home/gabriela/Documents/code/Cox/pathways/downstream_pathways.csv",header = TRUE)
 aas = read.csv("/home/gabriela/Documents/code/Cox/pathways/pathways_no_dupl.csv",header = TRUE)
 aas = aas[,-1]
 pathway_names = colnames(aas)
-# write.csv(pathway_names,'pathway_names.csv')
-#write.csv(paths,'groups.csv')
 
 # Get available case lists (collection of samples) for a given cancer study
 mycancerstudies = getCancerStudies(mycgds)[,1]
@@ -80,9 +30,6 @@ caselist = getCaseLists(mycgds,mycancerstudy)[,2];	# all case expressions
 tt=which(caselist=="Tumor Samples with mRNA data (RNA Seq V2)" | caselist=="Samples with mRNA data (RNA Seq V2)" )
 mycaselist = getCaseLists(mycgds,mycancerstudy)[tt,1]  #[1,1]
 # expressionPerTumor=getProfileData(mycgds,myListOfHousekeeping,mycaselist,mycaselist)
-
-# Get available genetic profiles
-# mygeneticprofile = getGeneticProfiles(mycgds,mycancerstudy)[1,1]  #
 
 #############################################################################################
 ###### Clinical data ########################################################################
@@ -179,20 +126,12 @@ os_months = xx_sorted[,1]
 os_status = (xx_sorted[,2]=="1:DECEASED")  # find indices of all deceased # previously just DECEASED
 x = xx_sorted[,3:ncol(xx_sorted)]
 
-# x = data.frame(x) # from matrix to data frame
-
 # create the object
 surv_object <- Surv(time = os_months, event = os_status)
-
-# # save all gene data
-# save(x, file = "allgene_x.rda")
-# save(surv_object, file = "allgene_surv_object.rda")
-
+  
 xxx <- model.matrix( ~ ., x)[,-1]     		# transform x into a matrix
-# xxx<- scale(xxx)
 
 ctype = sub("\\_.*", "", mycancerstudy) # study abbreviation
-# paste("Hello", "world", sep=" ")
 print(paste("This",studyName,"is going to be legen...", toString(jj),"/",toString(nmax)))
 write.csv(group,paste0('/home/gabriela/Documents/code/Cox/surv_files/',ctype,'_groups.csv'))
 write.csv(os_months,paste0('/home/gabriela/Documents/code/Cox/surv_files/',ctype,'_os_months.csv'))
